@@ -38,6 +38,7 @@ To add a child to the container, add an MdiChild control inside the MdiContainer
 ```
 
 Properties here which can be used are
+* Name - MANDATORY to set a name to the MdiChild, to allow the correct behavior of the focus between different MdiChild
 * Title (e.g. Title="Window 1")
 * Icon (e.g. Icon="MyIcon.png")
 * ShowIcon - Sets whether the icon should be show (e.g. ShowIcon="false" to hide)

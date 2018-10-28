@@ -22,20 +22,22 @@ namespace Example
 			Container.Children.CollectionChanged += (o, e) => Menu_RefreshWindows();
 			Container.MdiChildTitleChanged += Container_MdiChildTitleChanged;
 
-			Container.Children.Add(new MdiChild
-			{
-				Title = "Empty Window Using Code",
-				Icon = new BitmapImage(new Uri("OriginalLogo.png", UriKind.Relative))
-			});
+            Container.Children.Add(new MdiChild
+            {
+                Name = "EmptyWindowUsingCode",
+                Title = "Empty Window Using Code",
+                Icon = new BitmapImage(new Uri("OriginalLogo.png", UriKind.Relative))
+            });
 
 			Container.Children.Add(new MdiChild
 			{
-				Title = "Window Using Code",
+                Name = "ExampleControl",
+                Title = "Window Using Code",
 				Content = new ExampleControl(),
 				Width = 714,
 				Height = 734,
 				Position = new Point(300, 80)
-			});
+            });
 		}
 
 		#region Mdi-like title

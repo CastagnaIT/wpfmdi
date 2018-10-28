@@ -347,7 +347,7 @@
                             </Grid>
 
                             <Border Name="ContentBorder" Margin="6,30,6,6" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
-                                <ContentControl Content="{TemplateBinding Content}" />
+                                <ContentControl FocusVisualStyle="{x:Null}" Content="{TemplateBinding Content}" />
                             </Border>
 
                             <Rectangle Name="LeftBorder" Width="1" HorizontalAlignment="Left" RadiusX="9" RadiusY="9" Fill="{StaticResource NearBorderBrush}" />

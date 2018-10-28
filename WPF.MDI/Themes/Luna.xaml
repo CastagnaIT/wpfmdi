@@ -145,7 +145,7 @@
                         </Grid>
 
                         <Border Name="ContentHost" Margin="5,29,5,5" Background="{TemplateBinding Background}">
-                            <ContentControl Content="{TemplateBinding Content}" />
+                            <ContentControl FocusVisualStyle="{x:Null}" Content="{TemplateBinding Content}" />
                         </Border>
 
                         <Thumb Name="ResizeLeft" Width="6" Margin="0,6,0,6" HorizontalAlignment="Left" Cursor="SizeWE" Opacity="0" IsHitTestVisible="{TemplateBinding Resizable}" />

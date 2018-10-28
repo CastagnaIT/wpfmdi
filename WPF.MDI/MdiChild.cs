@@ -13,6 +13,8 @@ namespace WPF.MDI
 	[ContentProperty("Content")]
 	public class MdiChild : Control
 	{
+		private IInputElement LastFocousedElement = null;		
+
 		#region Constants
 
 		/// <summary>
@@ -356,7 +358,8 @@ namespace WPF.MDI
 			Loaded += MdiChild_Loaded;
 			GotFocus += MdiChild_GotFocus;
 			KeyDown += MdiChild_KeyDown;
-		}
+            LostFocus += MdiChild_LostFocus;
+        }
 
 		static void MdiChild_KeyDown(object sender, KeyEventArgs e)
 		{
@@ -391,8 +394,20 @@ namespace WPF.MDI
 
 			if (currentControl != null)
 				Container = (MdiContainer)currentControl;
-			//else throw new Exception("Unable to find MdiContainer parent.");
-		}
+
+            //Maintain the cycle of keyboard navigation within the active MdiChild
+            KeyboardNavigation.SetTabNavigation(this, KeyboardNavigationMode.Cycle);
+            KeyboardNavigation.SetControlTabNavigation(this, KeyboardNavigationMode.Cycle);
+            KeyboardNavigation.SetDirectionalNavigation(this, KeyboardNavigationMode.Cycle);
+
+            /* WPF manages the KeyDown only if it has at least one control with the Focus active,
+             * So set the focus on the first control within the MdiChild, to allow the KeyDown event
+             */
+            MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
+
+            //Stores reference to the control with the focus active, and then reactivates it when user return from another MdiChild
+            LastFocousedElement = Keyboard.FocusedElement;
+        }
 
 		/// <summary>
 		/// Handles the GotFocus event of the MdiChild control.
@@ -401,17 +416,40 @@ namespace WPF.MDI
 		/// <param name="e">The <see cref="System.Windows.RoutedEventArgs"/> instance containing the event data.</param>
 		private void MdiChild_GotFocus(object sender, RoutedEventArgs e)
 		{
-			Focus();
-		}
 
-		#endregion
+            if (LastFocousedElement != null)
+            {
+                if (Keyboard.FocusedElement != LastFocousedElement && (Container.ActiveMdiChild.Name != this.Name))
+                {
+                    //When the user returns to this MdiChild from another MdiChild, set the focus to the last control used
+                    Keyboard.Focus(LastFocousedElement);
+                    Container.ActiveMdiChild = this;
 
-		#region Control Overrides
+                    return;
+                }
+            
+            }
 
-		/// <summary>
-		/// When overridden in a derived class, is invoked whenever application code or internal processes call <see cref="M:System.Windows.FrameworkElement.ApplyTemplate"/>.
-		/// </summary>
-		public override void OnApplyTemplate()
+            Focus();
+        }
+
+        private void MdiChild_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (this.Content == null) return;
+            if (this.Content.IsKeyboardFocusWithin)
+            {
+                //Get the last element with active focus within the MdiChild
+                LastFocousedElement = Keyboard.FocusedElement;
+            }
+        }
+        #endregion
+
+        #region Control Overrides
+
+        /// <summary>
+        /// When overridden in a derived class, is invoked whenever application code or internal processes call <see cref="M:System.Windows.FrameworkElement.ApplyTemplate"/>.
+        /// </summary>
+        public override void OnApplyTemplate()
 		{
 			base.OnApplyTemplate();
 

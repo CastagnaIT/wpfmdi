@@ -24,7 +24,7 @@
                         <Grid>
                             <TextBlock Margin="10,0,0,0" Foreground="{StaticResource TitleForegroundBrush}" Text="{TemplateBinding Title}" />
                             <Border Margin="10,26,10,10" BorderThickness="1" Background="{TemplateBinding Background}" BorderBrush="{StaticResource InnerBorderBrush}">
-                                <ContentControl Content="{TemplateBinding Content}" />
+                                <ContentControl FocusVisualStyle="{x:Null}" Content="{TemplateBinding Content}" />
                             </Border>
                         </Grid>
                     </Border>
