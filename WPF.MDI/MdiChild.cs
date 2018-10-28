@@ -13,7 +13,7 @@ namespace WPF.MDI
 	[ContentProperty("Content")]
 	public class MdiChild : Control
 	{
-		private IInputElement LastFocousedElement = null;		
+		private IInputElement LastFocousedElement = null;
 
 		#region Constants
 
@@ -143,16 +143,29 @@ namespace WPF.MDI
 		public static readonly RoutedEvent ClosedEvent =
 			EventManager.RegisterRoutedEvent("Closed", RoutingStrategy.Bubble, typeof(RoutedEventArgs), typeof(MdiChild));
 
-		#endregion
+        /// <summary>
+        /// Identifies the WPF.MDI.MdiChild.ActivatedEvent routed event.
+        /// </summary>
+        /// <returns>The identifier for the WPF.MDI.MdiChild.ActivatedEvent routed event.</returns>
+        public static readonly RoutedEvent ActivatedEvent =
+            EventManager.RegisterRoutedEvent("Activated", RoutingStrategy.Bubble, typeof(RoutedEventArgs), typeof(MdiChild));
 
-		#region Property Accessors
+        /// <summary>
+        /// Identifies the WPF.MDI.MdiChild.DeactivatedEvent routed event.
+        /// </summary>
+        /// <returns>The identifier for the WPF.MDI.MdiChild.DeactivatedEvent routed event.</returns>
+        public static readonly RoutedEvent DeactivatedEvent =
+            EventManager.RegisterRoutedEvent("Deactivated", RoutingStrategy.Bubble, typeof(RoutedEventArgs), typeof(MdiChild));
+        #endregion
 
-		/// <summary>
-		/// Gets or sets the content.
-		/// This is a dependency property.
-		/// </summary>
-		/// <value>The content.</value>
-		public UIElement Content
+        #region Property Accessors
+
+        /// <summary>
+        /// Gets or sets the content.
+        /// This is a dependency property.
+        /// </summary>
+        /// <value>The content.</value>
+        public UIElement Content
 		{
 			get { return (UIElement)GetValue(ContentProperty); }
 			set { SetValue(ContentProperty, value); }
@@ -299,13 +312,25 @@ namespace WPF.MDI
 			remove { RemoveHandler(ClosedEvent, value); }
 		}
 
-		#endregion
+        public event RoutedEventHandler Activated
+        {
+            add { AddHandler(ActivatedEvent, value); }
+            remove { RemoveHandler(ActivatedEvent, value); }
+        }
 
-		#region Member Declarations
+        public event RoutedEventHandler Deactivated
+        {
+            add { AddHandler(DeactivatedEvent, value); }
+            remove { RemoveHandler(DeactivatedEvent, value); }
+        }
 
-		#region Top Buttons
+        #endregion
 
-		private Button minimizeButton;
+        #region Member Declarations
+
+        #region Top Buttons
+
+        private Button minimizeButton;
 
 		private Button maximizeButton;
 
@@ -407,6 +432,8 @@ namespace WPF.MDI
 
             //Stores reference to the control with the focus active, and then reactivates it when user return from another MdiChild
             LastFocousedElement = Keyboard.FocusedElement;
+
+            RaiseEvent(new RoutedEventArgs(ActivatedEvent));
         }
 
 		/// <summary>
@@ -425,6 +452,7 @@ namespace WPF.MDI
                     Keyboard.Focus(LastFocousedElement);
                     Container.ActiveMdiChild = this;
 
+		            RaiseEvent(new RoutedEventArgs(ActivatedEvent));
                     return;
                 }
             
@@ -440,6 +468,10 @@ namespace WPF.MDI
             {
                 //Get the last element with active focus within the MdiChild
                 LastFocousedElement = Keyboard.FocusedElement;
+            }
+            else if (!this.IsKeyboardFocusWithin && (Container.ActiveMdiChild.Name == this.Name))
+            {
+                RaiseEvent(new RoutedEventArgs(DeactivatedEvent));
             }
         }
         #endregion

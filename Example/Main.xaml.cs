@@ -249,6 +249,20 @@ namespace Example
 		{
 			Window1.ShowIcon = false;
 		}
-		#endregion
-	}
+        #endregion
+
+        #region Events of Window1
+
+        private void Window1_Activated(object sender, RoutedEventArgs e)
+        {
+            Console.WriteLine("Window1 MdiChild: has received 'Activated' event.");
+        }
+
+        private void Window1_Deactivated(object sender, RoutedEventArgs e)
+        {
+            Console.WriteLine("Window1 MdiChild: has received 'Deactivated' event.");
+        }
+
+        #endregion
+    }
 }

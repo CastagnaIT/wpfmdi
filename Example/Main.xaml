@@ -21,7 +21,7 @@
                 </Menu>
             </mdi:MdiContainer.Menu>
             <mdi:MdiChild Name="WindowEmptyWindowUsingXAML" Title="Empty Window Using XAML" />
-            <mdi:MdiChild Name="Window1" Title="Window Using XAML" Position="20,15" Icon="OriginalLogo.png">
+            <mdi:MdiChild Name="Window1" Title="Window Using XAML" Position="20,15" Icon="OriginalLogo.png" Activated="Window1_Activated" Deactivated="Window1_Deactivated">
                 <StackPanel>
                     <Button Name="DisableMinimize" Height="20" Click="DisableMinimize_Click">Disable Minimize</Button>
                     <Button Name="EnableMinimize" Height="20" Click="EnableMinimize_Click">Enable Minimize</Button>

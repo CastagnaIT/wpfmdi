@@ -203,8 +203,10 @@ namespace WPF.MDI
 			ScrollViewer sv = new ScrollViewer {
 				Content = _windowCanvas = new Canvas(),
 				HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
-				VerticalScrollBarVisibility = ScrollBarVisibility.Auto
-			};
+				VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+                IsTabStop = false, //This interferes with the focus on MdiChilds
+                Focusable = false //This interferes with the focus on MdiChilds
+            };
 			gr.Children.Add(sv);
 			Grid.SetRow(sv, 1);
 			Content = gr;
