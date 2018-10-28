@@ -432,8 +432,6 @@ namespace WPF.MDI
 
             //Stores reference to the control with the focus active, and then reactivates it when user return from another MdiChild
             LastFocousedElement = Keyboard.FocusedElement;
-
-            RaiseEvent(new RoutedEventArgs(ActivatedEvent));
         }
 
 		/// <summary>
