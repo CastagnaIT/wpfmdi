@@ -37,6 +37,13 @@ To add a child to the container, add an MdiChild control inside the MdiContainer
 </mdi:MdiContainer>
 ```
 
+Additional events can be used are
+* Closing - It happens before the closed event
+* Closed - When MdiChild has been closed
+* Activated - When MdiChild is activated (it has the focus)
+* Deactivated - When MdiChild is deactivated (it has lost the focus)
+
+
 Properties here which can be used are
 * Name - MANDATORY to set a name to the MdiChild, to allow the correct behavior of the focus between different MdiChild
 * Title (e.g. Title="Window 1")
@@ -45,6 +52,7 @@ Properties here which can be used are
 * MinimizeBox - Sets whether the minimize box should be enabled (e.g. MinimizeBox="false" to disable)
 * MaximizeBox - Sets whether the maximize box should be enabled (e.g. MaximizeBox="false" to disable)
 * Resizable - Sets whether the window is resizable (e.g. Resizable="false" to prevent the user from resizing the window)
+* IsActive - Get the current Activated/Deactivated state of MdiChild
 * Default FrameworkElement properties - Background, BorderBrush, Margin, Width, Height etc.
 
 For example, the following will set the title of the window to Window 1, prevent the user from resizing the window, disable the minimize button and make the background of the window dark gray

@@ -116,24 +116,31 @@ namespace WPF.MDI
 			DependencyProperty.Register("Position", typeof(Point), typeof(MdiChild),
 			new UIPropertyMetadata(new Point(-1, -1), new PropertyChangedCallback(PositionValueChanged)));
 
-		///// <summary>
-		///// Identifies the WPF.MDI.MdiChild.ButtonsProperty dependency property.
-		///// </summary>
-		///// <returns>The identifier for the WPF.MDI.MdiChild.ButtonsProperty property.</returns>
-		//public static readonly DependencyProperty ButtonsProperty =
-		//    DependencyProperty.Register("Buttons", typeof(Panel), typeof(MdiChild),
-		//    new UIPropertyMetadata(null));
-
-
-		#endregion
-
-		#region Dependency Events
-
-		/// <summary>
-		/// Identifies the WPF.MDI.MdiChild.ClosingEvent routed event.
+        /// <summary>
+		/// Identifies the WPF.MDI.MdiChild.IsActiveProperty dependency property.
 		/// </summary>
-		/// <returns>The identifier for the WPF.MDI.MdiChild.ClosingEvent routed event.</returns>
-		public static readonly RoutedEvent ClosingEvent =
+		/// <returns>The identifier for the WPF.MDI.MdiChild.IsActiveProperty property.</returns>
+		public static readonly DependencyProperty IsActiveProperty =
+            DependencyProperty.Register("IsActive", typeof(bool), typeof(MdiChild));
+
+        ///// <summary>
+        ///// Identifies the WPF.MDI.MdiChild.ButtonsProperty dependency property.
+        ///// </summary>
+        ///// <returns>The identifier for the WPF.MDI.MdiChild.ButtonsProperty property.</returns>
+        //public static readonly DependencyProperty ButtonsProperty =
+        //    DependencyProperty.Register("Buttons", typeof(Panel), typeof(MdiChild),
+        //    new UIPropertyMetadata(null));
+
+
+        #endregion
+
+        #region Dependency Events
+
+        /// <summary>
+        /// Identifies the WPF.MDI.MdiChild.ClosingEvent routed event.
+        /// </summary>
+        /// <returns>The identifier for the WPF.MDI.MdiChild.ClosingEvent routed event.</returns>
+        public static readonly RoutedEvent ClosingEvent =
 			EventManager.RegisterRoutedEvent("Closing", RoutingStrategy.Bubble, typeof(ClosingEventArgs), typeof(MdiChild));
 
 		/// <summary>
@@ -419,7 +426,7 @@ namespace WPF.MDI
 
 			if (currentControl != null)
 				Container = (MdiContainer)currentControl;
-
+           
             //Maintain the cycle of keyboard navigation within the active MdiChild
             KeyboardNavigation.SetTabNavigation(this, KeyboardNavigationMode.Cycle);
             KeyboardNavigation.SetControlTabNavigation(this, KeyboardNavigationMode.Cycle);
@@ -469,6 +476,7 @@ namespace WPF.MDI
             }
             else if (!this.IsKeyboardFocusWithin && (Container.ActiveMdiChild.Name == this.Name))
             {
+                SetValue(IsActiveProperty, false);
                 RaiseEvent(new RoutedEventArgs(DeactivatedEvent));
             }
         }
@@ -1100,8 +1108,9 @@ namespace WPF.MDI
 		/// </summary>
 		public new void Focus()
 		{
+            SetValue(IsActiveProperty, true);
 			Container.ActiveMdiChild = this;
-		}
+        }
 
 		/// <summary>
 		/// Sets WindowState to previous non-maximized value.
