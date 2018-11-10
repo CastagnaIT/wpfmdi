@@ -7,7 +7,7 @@ using System.Windows.Markup;
 using System.Windows.Media;
 using System.Collections.Generic;
 using System.Windows.Input;
-using System.Windows.Data;
+using System.ComponentModel;
 
 namespace WPF.MDI
 {
@@ -27,23 +27,23 @@ namespace WPF.MDI
 
 		private static ResourceDictionary currentResourceDictionary;
 
-		#endregion
-		
-		#region Dependency Properties
+        #endregion
 
-		/// <summary>
-		/// Identifies the WPF.MDI.MdiContainer.Theme dependency property.
-		/// </summary>
-		/// <returns>The identifier for the WPF.MDI.MdiContainer.Theme property.</returns>
-		public static readonly DependencyProperty ThemeProperty =
-			DependencyProperty.Register("Theme", typeof(ThemeType), typeof(MdiContainer),
-			new UIPropertyMetadata(ThemeType.Aero, new PropertyChangedCallback(ThemeValueChanged)));
+        #region Dependency Properties
 
-		/// <summary>
-		/// Identifies the WPF.MDI.MdiContainer.Menu dependency property.
-		/// </summary>
-		/// <returns>The identifier for the WPF.MDI.MdiContainer.Menu property.</returns>
-		public static readonly DependencyProperty MenuProperty =
+        /// <summary>
+        /// Identifies the WPF.MDI.MdiContainer.Theme dependency property.
+        /// </summary>
+        /// <returns>The identifier for the WPF.MDI.MdiContainer.Theme property.</returns>
+        public static readonly DependencyProperty ThemeProperty =
+            DependencyProperty.Register("Theme", typeof(ThemeType), typeof(MdiContainer),
+            new FrameworkPropertyMetadata(ThemeType.Aero, FrameworkPropertyMetadataOptions.AffectsRender, new PropertyChangedCallback(ThemeValueChanged)));
+
+        /// <summary>
+        /// Identifies the WPF.MDI.MdiContainer.Menu dependency property.
+        /// </summary>
+        /// <returns>The identifier for the WPF.MDI.MdiContainer.Menu property.</returns>
+        public static readonly DependencyProperty MenuProperty =
 			DependencyProperty.Register("Menu", typeof(UIElement), typeof(MdiContainer),
 			new UIPropertyMetadata(null, new PropertyChangedCallback(MenuValueChanged)));
 
@@ -87,13 +87,13 @@ namespace WPF.MDI
 			set { SetValue(ThemeProperty, value); }
 		}
 
-		/// <summary>
-		/// Gets or sets the element to display as menu.
-		/// Window buttons in maximized mode will be on the same level.
-		/// This is a dependency property.
-		/// </summary>
-		/// <value>Element to be placed in menu row.</value>
-		public UIElement Menu
+        /// <summary>
+        /// Gets or sets the element to display as menu.
+        /// Window buttons in maximized mode will be on the same level.
+        /// This is a dependency property.
+        /// </summary>
+        /// <value>Element to be placed in menu row.</value>
+        public UIElement Menu
 		{
 			get { return (UIElement)GetValue(MenuProperty); }
 			set { SetValue(MenuProperty, value); }
@@ -172,16 +172,16 @@ namespace WPF.MDI
 		/// </summary>
 		private double _windowOffset;
 
-		#endregion
+        #endregion
 
-		#region Constructor
+        #region Constructor
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="MdiContainer"/> class.
-		/// </summary>
-		public MdiContainer()
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MdiContainer"/> class.
+        /// </summary>
+        public MdiContainer()
 		{
-			Background = Brushes.DarkGray;
+            Background = Brushes.DarkGray;
 			Focusable = IsTabStop = false;
 
 			Children = new ObservableCollection<MdiChild>();
@@ -211,12 +211,14 @@ namespace WPF.MDI
 			Grid.SetRow(sv, 1);
 			Content = gr;
 
-			if (Environment.OSVersion.Version.Major > 5)
-				ThemeValueChanged(this, new DependencyPropertyChangedEventArgs(ThemeProperty, Theme, ThemeType.Aero));
-			else
-				ThemeValueChanged(this, new DependencyPropertyChangedEventArgs(ThemeProperty, Theme, ThemeType.Luna));
+            /*
+            if (Environment.OSVersion.Version.Major > 5)
+                ThemeValueChanged(this, new DependencyPropertyChangedEventArgs(ThemeProperty, Theme, ThemeType.Aero));
+            else
+                ThemeValueChanged(this, new DependencyPropertyChangedEventArgs(ThemeProperty, Theme, ThemeType.Luna));
+            */
 
-			Loaded += MdiContainer_Loaded;
+            Loaded += MdiContainer_Loaded;
 			SizeChanged += MdiContainer_SizeChanged;
 			KeyDown += new System.Windows.Input.KeyEventHandler(MdiContainer_KeyDown);
 		}
@@ -312,9 +314,11 @@ namespace WPF.MDI
 				MdiChild mdiChild = Children[i];
 				if (mdiChild.WindowState == WindowState.Maximized)
 				{
+                    Grid gridContent = Content as Grid;
+
 					mdiChild.Width = ActualWidth;
-					mdiChild.Height = ActualHeight;
-				}
+                    mdiChild.Height = ActualHeight - gridContent.RowDefinitions[0].ActualHeight; //Subtract menu height
+                }
 				if (mdiChild.WindowState == WindowState.Minimized)
 				{
 					mdiChild.Position = new Point(mdiChild.Position.X, mdiChild.Position.Y + e.NewSize.Height - e.PreviousSize.Height);
@@ -451,31 +455,34 @@ namespace WPF.MDI
 				case ThemeType.Aero:
 					Application.Current.Resources.MergedDictionaries.Add(currentResourceDictionary = new ResourceDictionary { Source = new Uri(@"/WPF.MDI;component/Themes/Aero.xaml", UriKind.Relative) });
 					break;
-			}
+                case ThemeType.Aero2:
+                    Application.Current.Resources.MergedDictionaries.Add(currentResourceDictionary = new ResourceDictionary { Source = new Uri(@"/WPF.MDI;component/Themes/Aero2.xaml", UriKind.Relative) });
+                    break;
+            }
 
 			//if (max_mode)
 			//    mdiContainer.ActiveMdiChild.WindowState = WindowState.Maximized;
 		}
 
-		/// <summary>
-		/// Dependency property event once the menu element has changed.
-		/// </summary>
-		/// <param name="sender">The sender.</param>
-		/// <param name="e">The <see cref="System.Windows.DependencyPropertyChangedEventArgs"/> instance containing the event data.</param>
-		private static void MenuValueChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
-		{
-			MdiContainer mdiContainer = (MdiContainer)sender;
-			UIElement menu = (UIElement)e.NewValue;
+        /// <summary>
+        /// Dependency property event once the menu element has changed.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="System.Windows.DependencyPropertyChangedEventArgs"/> instance containing the event data.</param>
+        private static void MenuValueChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+        {
+            MdiContainer mdiContainer = (MdiContainer)sender;
+            UIElement menu = (UIElement)e.NewValue;
 
-			mdiContainer._menu.Child = menu;
-		}
+            mdiContainer._menu.Child = menu;
+        }
 
-		/// <summary>
-		/// Dependency property event once the MDI layout value has changed.
-		/// </summary>
-		/// <param name="sender">The sender.</param>
-		/// <param name="e">The <see cref="System.Windows.DependencyPropertyChangedEventArgs"/> instance containing the event data.</param>
-		private static void MdiLayoutValueChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+        /// <summary>
+        /// Dependency property event once the MDI layout value has changed.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="System.Windows.DependencyPropertyChangedEventArgs"/> instance containing the event data.</param>
+        private static void MdiLayoutValueChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
 		{
 			MdiContainer mdiContainer = (MdiContainer)sender;
 			MdiLayout value = (MdiLayout)e.NewValue;
@@ -483,7 +490,7 @@ namespace WPF.MDI
 			if (value == MdiLayout.ArrangeIcons ||
 				mdiContainer.Children.Count < 1)
 				return;
-
+            
 			// 1. WindowState.Maximized -> WindowState.Normal
 			List<MdiChild> minimizedWindows = new List<MdiChild>(),
 				normalWindows = new List<MdiChild>();
@@ -510,7 +517,7 @@ namespace WPF.MDI
 			for (int i = 0; i < minimizedWindows.Count; i++)
 			{
 				MdiChild mdiChild = minimizedWindows[i];
-				int capacity = Convert.ToInt32(mdiContainer.ActualWidth) / MdiChild.MinimizedWidth,
+				int capacity = Convert.ToInt32(mdiContainer.ActualWidth / MdiChild.MinimizedWidth),
 					row = i / capacity + 1,
 					col = i % capacity;
 				containerHeight = mdiContainer.InnerHeight - MdiChild.MinimizedHeight * row;
@@ -518,8 +525,8 @@ namespace WPF.MDI
 				mdiChild.Position = new Point(newLeft, containerHeight);
 			}
 
-			// 3. Resize & arrange normal windows
-			switch (value)
+            // 3. Resize & arrange normal windows
+            switch (value)
 			{
 				case MdiLayout.Cascade:
 					{
@@ -624,9 +631,9 @@ namespace WPF.MDI
 					}
 					break;
 			}
-			mdiContainer.InvalidateSize();
+            mdiContainer.InvalidateSize();
 			mdiContainer.MdiLayout = MdiLayout.ArrangeIcons;
-		}
+        }
 
 		/// <summary>
 		/// Dependency property event once the focused mdi child has changed.

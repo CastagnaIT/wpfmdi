@@ -16,6 +16,10 @@
 		/// <summary>
 		/// Windows Vista and 7 theme.
 		/// </summary>
-		Aero
+		Aero,
+        /// <summary>
+		/// Windows 10 theme.
+		/// </summary>
+        Aero2
 	}
 }

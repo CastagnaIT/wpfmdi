@@ -15,19 +15,16 @@ namespace WPF.MDI
 	{
 		private IInputElement LastFocousedElement = null;
 
-		#region Constants
-
 		/// <summary>
 		/// Width of minimized window.
 		/// </summary>
-		internal const int MinimizedWidth = 160;
+		internal static double MinimizedWidth;
 
 		/// <summary>
 		/// Height of minimized window.
 		/// </summary>
-		internal const int MinimizedHeight = 29;
+		internal static double MinimizedHeight;
 
-		#endregion
 
 		#region Dependency Properties
 
@@ -121,7 +118,8 @@ namespace WPF.MDI
 		/// </summary>
 		/// <returns>The identifier for the WPF.MDI.MdiChild.IsActiveProperty property.</returns>
 		public static readonly DependencyProperty IsActiveProperty =
-            DependencyProperty.Register("IsActive", typeof(bool), typeof(MdiChild));
+            DependencyProperty.Register("IsActive", typeof(bool), typeof(MdiChild),
+                new UIPropertyMetadata(false));
 
         ///// <summary>
         ///// Identifies the WPF.MDI.MdiChild.ButtonsProperty dependency property.
@@ -302,12 +300,17 @@ namespace WPF.MDI
 		/// Force user not to use Margin property.
 		/// </summary>
 		private new Thickness Margin { set { } }
-		
-		#endregion
 
-		#region Event Accessors
+        public bool IsActive
+        {
+            get { return (bool)GetValue(IsActiveProperty); }
+            private set { SetValue(IsActiveProperty, value); }
+        }
+        #endregion
 
-		public event RoutedEventHandler Closing
+        #region Event Accessors
+
+        public event RoutedEventHandler Closing
 		{
 			add { AddHandler(ClosingEvent, value); }
 			remove { RemoveHandler(ClosingEvent, value); }
@@ -377,15 +380,15 @@ namespace WPF.MDI
 		/// </summary>
 		static MdiChild()
 		{
-			DefaultStyleKeyProperty.OverrideMetadata(typeof(MdiChild), new FrameworkPropertyMetadata(typeof(MdiChild)));
-		}
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(MdiChild), new FrameworkPropertyMetadata(typeof(MdiChild)));
+        }
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="MdiChild"/> class.
 		/// </summary>
 		public MdiChild()
 		{
-			Focusable = IsTabStop = false;
+            Focusable = IsTabStop = false;
 
 			Loaded += MdiChild_Loaded;
 			GotFocus += MdiChild_GotFocus;
@@ -489,9 +492,18 @@ namespace WPF.MDI
         /// </summary>
         public override void OnApplyTemplate()
 		{
-			base.OnApplyTemplate();
+            base.OnApplyTemplate();
 
-			minimizeButton = (Button)Template.FindName("MinimizeButton", this);
+            object objMinimizedWidth = TryFindResource("WindowMinimized_Width");
+            object objMinimized_Height = TryFindResource("WindowMinimized_Height");
+
+            if (objMinimizedWidth != null)
+                MinimizedWidth = (double)objMinimizedWidth;
+
+            if (objMinimized_Height != null)
+                MinimizedHeight = (double)objMinimized_Height;
+
+            minimizeButton = (Button)Template.FindName("MinimizeButton", this);
 			maximizeButton = (Button)Template.FindName("MaximizeButton", this);
 			closeButton = (Button)Template.FindName("CloseButton", this);
 			buttonsPanel = (StackPanel)Template.FindName("ButtonsPanel", this);
@@ -622,16 +634,16 @@ namespace WPF.MDI
 			Focused = true;
 		}
 
-		#endregion
+        #endregion
 
-		#region Top Button Events
+        #region Top Button Events
 
-		/// <summary>
-		/// Handles the Click event of the minimizeButton control.
-		/// </summary>
-		/// <param name="sender">The source of the event.</param>
-		/// <param name="e">The <see cref="System.Windows.RoutedEventArgs"/> instance containing the event data.</param>
-		private void minimizeButton_Click(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// Handles the Click event of the minimizeButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="System.Windows.RoutedEventArgs"/> instance containing the event data.</param>
+        private void minimizeButton_Click(object sender, RoutedEventArgs e)
 		{
 			if (WindowState == WindowState.Minimized)
 				WindowState = WindowState.Normal;
@@ -1032,7 +1044,7 @@ namespace WPF.MDI
 							Rect newWindowPlace;
 							bool occupied = true;
 							int count = 0,
-								capacity = Convert.ToInt32(mdiContainer.ActualWidth) / MdiChild.MinimizedWidth;
+								capacity = Convert.ToInt32(mdiContainer.ActualWidth / MdiChild.MinimizedWidth);
 							do
 							{
 								int row = count / capacity + 1,

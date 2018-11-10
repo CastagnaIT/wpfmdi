@@ -66,8 +66,9 @@ namespace Example
 			Generic.IsChecked = true;
 			Luna.IsChecked = false;
 			Aero.IsChecked = false;
+            Aero2.IsChecked = false;
 
-			Container.Theme = ThemeType.Generic;
+            Container.Theme = ThemeType.Generic;
 		}
 
 		/// <summary>
@@ -80,8 +81,9 @@ namespace Example
 			Generic.IsChecked = false;
 			Luna.IsChecked = true;
 			Aero.IsChecked = false;
+            Aero2.IsChecked = false;
 
-			Container.Theme = ThemeType.Luna;
+            Container.Theme = ThemeType.Luna;
 		}
 
 		/// <summary>
@@ -94,15 +96,31 @@ namespace Example
 			Generic.IsChecked = false;
 			Luna.IsChecked = false;
 			Aero.IsChecked = true;
+            Aero2.IsChecked = false;
 
-			Container.Theme = ThemeType.Aero;
+            Container.Theme = ThemeType.Aero;
 		}
 
-		#endregion
+        /// <summary>
+		/// Handles the Click event of the Aero2 control.
+		/// </summary>
+		/// <param name="sender">The source of the event.</param>
+		/// <param name="e">The <see cref="System.Windows.RoutedEventArgs"/> instance containing the event data.</param>
+		private void Aero2_Click(object sender, RoutedEventArgs e)
+        {
+            Generic.IsChecked = false;
+            Luna.IsChecked = false;
+            Aero.IsChecked = false;
+            Aero2.IsChecked = true;
 
-		#region Menu Events
+            Container.Theme = ThemeType.Aero2;
+        }
 
-		int ooo = 1;
+        #endregion
+
+        #region Menu Events
+
+        int ooo = 1;
 
 		/// <summary>
 		/// Handles the Click event of the 'Normal window' menu item.

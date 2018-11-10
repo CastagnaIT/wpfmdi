@@ -4,7 +4,7 @@
     xmlns:mdi="clr-namespace:WPF.MDI;assembly=WPF.MDI"
     Title="WPF.MDI Example" Height="362" Width="684" WindowState="Maximized">
     <DockPanel>
-        <mdi:MdiContainer Name="Container">
+        <mdi:MdiContainer Name="Container" Theme="Aero2">
             <mdi:MdiContainer.Menu>
                 <Menu DockPanel.Dock="Top">
                     <MenuItem Header="Add">
@@ -16,6 +16,7 @@
                         <MenuItem Header="Generic" Name="Generic" ToolTip="Generic Visual Studio designer theme" Click="Generic_Click" />
                         <MenuItem Header="Luna" Name="Luna" ToolTip="Blue Windows XP theme" Click="Luna_Click" />
                         <MenuItem Header="Aero" Name="Aero" ToolTip="Windows Vista/7 theme"  Click="Aero_Click" />
+                        <MenuItem Header="Aero2" Name="Aero2" ToolTip="Windows 10 theme"  Click="Aero2_Click" />
                     </MenuItem>
                     <MenuItem Header="Windows" x:Name="WindowsMenu" x:FieldModifier="private" />
                 </Menu>
