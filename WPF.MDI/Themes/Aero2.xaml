@@ -249,7 +249,7 @@
                         <!--With .NET 4.5 is possible use: BorderBrush="{DynamicResource {x:Static SystemParameters.WindowGlassBrush}}" to get dymamic accent color-->
                         <Border Margin="6,0,6,6" Name="BaseBorder" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" BorderThickness="1" BorderBrush="Black">
                             <Border.Effect>
-                                <DropShadowEffect x:Name="BaseBorderShadow" Opacity="0.4" BlurRadius="25" Direction="-45" RenderingBias="Quality" ShadowDepth="4"/>
+                                <DropShadowEffect x:Name="BaseBorderShadow" Opacity="0.4" BlurRadius="25" Direction="-45" RenderingBias="Performance" ShadowDepth="4"/>
                             </Border.Effect>
                             <Grid>
                                 <Thumb Name="DragThumb" Height="30" VerticalAlignment="Top" Opacity="0" />
@@ -289,7 +289,7 @@
                             <Setter TargetName="BaseBorder" Property="BorderBrush" Value="#919191" />
                             <Setter TargetName="BaseBorder" Property="Effect">
                                 <Setter.Value>
-                                    <DropShadowEffect Opacity="0.34" BlurRadius="14" Direction="-45" RenderingBias="Quality" ShadowDepth="2"/>
+                                    <DropShadowEffect Opacity="0.34" BlurRadius="14" Direction="-45" RenderingBias="Performance" ShadowDepth="2"/>
                                 </Setter.Value>
                             </Setter>
 
