@@ -200,8 +200,8 @@ namespace WPF.MDI
 			_topPanel.Children.Add(new UIElement());
 			gr.Children.Add(_topPanel);
 
-			ScrollViewer sv = new ScrollViewer {
-				Content = _windowCanvas = new Canvas(),
+            ScrollViewer sv = new ScrollViewer {
+                Content = _windowCanvas = new Canvas() { UseLayoutRounding = true },
 				HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
 				VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
                 IsTabStop = false, //This interferes with the focus on MdiChilds
@@ -530,32 +530,33 @@ namespace WPF.MDI
 			{
 				case MdiLayout.Cascade:
 					{
-						double newWidth = mdiContainer.ActualWidth * 0.58, // should be non-linear formula here
-							newHeight = containerHeight * 0.67,
-							windowOffset = 0;
-						foreach (MdiChild mdiChild in normalWindows)
-						{
-							if (mdiChild.Resizable)
-							{
-								mdiChild.Width = newWidth;
-								mdiChild.Height = newHeight;
-							}
-							mdiChild.Position = new Point(windowOffset, windowOffset);
+                        double newWidth = mdiContainer.ActualWidth - (int)(mdiContainer.ActualWidth * 0.20); //Width - 20%
+                        double newHeight = containerHeight - (int)(containerHeight * 0.30); //Height - 30%
+                        double CurrentWindowOffset = 0;
 
-							windowOffset += WindowOffset;
-							if (windowOffset + mdiChild.Width > mdiContainer.ActualWidth)
-								windowOffset = 0;
-							if (windowOffset + mdiChild.Height > containerHeight)
-								windowOffset = 0;
-						}
-					}
+                        foreach (MdiChild mdiChild in normalWindows)
+                        {
+                            if (mdiChild.Resizable)
+                            {
+                                mdiChild.Width = newWidth;
+                                mdiChild.Height = newHeight;
+                            }
+                            mdiChild.Position = new Point(CurrentWindowOffset, CurrentWindowOffset);
+
+                            CurrentWindowOffset += WindowOffset;
+                            if (CurrentWindowOffset + mdiChild.Width > mdiContainer.ActualWidth)
+                                CurrentWindowOffset = 0;
+                            if (CurrentWindowOffset + mdiChild.Height > containerHeight)
+                                CurrentWindowOffset = 0;
+                        }
+                    }
 					break;
 				case MdiLayout.TileHorizontal:
 					{
-						int cols = (int)Math.Sqrt(normalWindows.Count),
-							rows = normalWindows.Count / cols;
+                        double cols = Math.Sqrt(normalWindows.Count),
+                            rows = normalWindows.Count / cols;
 
-						List<int> col_count = new List<int>(); // windows per column
+						List<double> col_count = new List<double>(); // windows per column
 						for (int i = 0; i < cols; i++)
 						{
 							if (normalWindows.Count % cols > cols - i - 1)
@@ -569,7 +570,8 @@ namespace WPF.MDI
 							offsetTop = 0,
 							offsetLeft = 0;
 
-						for (int i = 0, col_index = 0, prev_count = 0; i < normalWindows.Count; i++)
+                        double prev_count = 0;
+                        for (int i = 0, col_index = 0; i < normalWindows.Count; i++)
 						{
 							if (i >= prev_count + col_count[col_index])
 							{
@@ -582,20 +584,20 @@ namespace WPF.MDI
 							MdiChild mdiChild = normalWindows[i];
 							if (mdiChild.Resizable)
 							{
-								mdiChild.Width = newWidth;
+                                mdiChild.Width = newWidth;
 								mdiChild.Height = newHeight;
 							}
-							mdiChild.Position = new Point(offsetLeft, offsetTop);
+                            mdiChild.Position = new Point(offsetLeft, offsetTop);
 							offsetTop += newHeight;
 						}
 					}
 					break;
 				case MdiLayout.TileVertical:
 					{
-						int rows = (int)Math.Sqrt(normalWindows.Count),
+						double rows = Math.Sqrt(normalWindows.Count),
 							cols = normalWindows.Count / rows;
 
-						List<int> col_count = new List<int>(); // windows per column
+						List<double> col_count = new List<double>(); // windows per column
 						for (int i = 0; i < cols; i++)
 						{
 							if (normalWindows.Count % cols > cols - i - 1)
@@ -609,7 +611,8 @@ namespace WPF.MDI
 							offsetTop = 0,
 							offsetLeft = 0;
 
-						for (int i = 0, col_index = 0, prev_count = 0; i < normalWindows.Count; i++)
+                        double prev_count = 0;
+                        for (int i = 0, col_index = 0; i < normalWindows.Count; i++)
 						{
 							if (i >= prev_count + col_count[col_index])
 							{
@@ -696,7 +699,7 @@ namespace WPF.MDI
 
 			public int Compare(MdiChild x, MdiChild y)
 			{
-				return -1 * Canvas.GetZIndex(x).CompareTo(Canvas.GetZIndex(y));
+				return 1 * Canvas.GetZIndex(x).CompareTo(Canvas.GetZIndex(y));
 			}
 
 			#endregion
