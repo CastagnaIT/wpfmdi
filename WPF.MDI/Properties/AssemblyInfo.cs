@@ -12,7 +12,7 @@ using System.Windows;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("xadet")]
 [assembly: AssemblyProduct("WPF.MDI")]
-[assembly: AssemblyCopyright("2009 xadet, 2010 stbear")]
+[assembly: AssemblyCopyright("2009 xadet, 2010 stbear, 2018 Stefano Gottardo")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
