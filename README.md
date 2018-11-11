@@ -1,12 +1,21 @@
 # WPF Multiple Document Interface (MDI)
+I have resumed the old project started by 'xadet' in 2009, recommended as a possible solution by Microsoft partners, my goal is try to improve it in my free time.
+So, what is the reason for the origin of this project?
+Microsoft's new strategy has decided not to include MDI support to WPF, and the reason is easily understood. The tendency of the most modern programs is to implement customized forms of "MDI" (see Google Chrome, Excel or Visual Studio itself) that mainly use Paginations, Tabbed documents or dockable windows. So Microsoft has deduced that MDI is no longer the best user interface experience adopted by software and the intention not to use resources to propose a common solution that will probably never fit the intent of each software.
 
-### [ Migrated from [CodePlex](https://wpfmdi.codeplex.com) 24th November 2017 ] 
+For those who want to reintroduce this old system, they have three solutions:
+1. Using Windows Forms interorp
+2. Use third party extensions
+3. Create a customized implementation of child window manager (the goal of this project)
+ 
+
+#### [ Original project migrated from [CodePlex](https://wpfmdi.codeplex.com) 24th November 2017 to GitHub [dutts](https://github.com/dutts/wpfmdi)]
 
 ## Project Description
 A library to add the traditional Windows Forms Multiple Document Interface (MDI) features to WPF. The aim is to resemble the original as much as possible.
 
 ## Themes
-WPF MDI includes two themes, Luna (XP) and Aero (Vista & 7) as well as support for custom themes. Themes are used depending on the operating system, although a theme can be set at compile and/or run time also.
+WPF MDI includes three themes, Luna (XP), Aero (Vista & 7), Aero2 (Windows 10) as well as support for custom themes. Themes are used depending on the operating system, although a theme can be set at compile and/or run time also.
 
 ## Using the Control
 The control supports both XAML and code use.
